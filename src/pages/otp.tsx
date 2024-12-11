@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,32 +15,35 @@ import {
 } from "@/components/ui/input-otp";
 
 import { OTPContext } from "@/contexts/otp-context";
-
-import { useForm } from "react-hook-form";
-import * as zod from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export function OTP() {
+  const navigate = useNavigate();
   const { OTP } = useContext(OTPContext);
 
-  const OTPInputs = zod.object({
-    OTPInput_1: zod.string().min(1).max(1),
-    OTPInput_2: zod.string().min(1).max(1),
-    OTPInput_3: zod.string().min(1).max(1),
-    OTPInput_4: zod.string().min(1).max(1),
-    OTPInput_5: zod.string().min(1).max(1),
-    OTPInput_6: zod.string().min(1).max(1),
-  })
+  const [otpValue, setOtpValue] = useState("");
+  const [otpConfirmed, setOtpConfirmed] = useState(false);
 
-  type OTPInputsType = zod.infer<typeof OTPInputs>
+  function handleVerifyOTP(event: any) {
+    event.preventDefault();
 
-  const { register, handleSubmit } = useForm<OTPInputsType>({
-    resolver: zodResolver(OTPInputs)
-  })
+    if (otpValue === OTP) {
+      setOtpConfirmed(true);
+    } else {
+      toast.error("Código invalido.");
+    }
 
-  function handleVerifyOTP(data: OTPInputsType){
-    console.log(data)
+    if (otpConfirmed) {
+      toast.success("Código valido!", {
+        action: {
+          label: "alterar minha senha",
+          onClick: () => {
+            navigate("/change-password");
+          },
+        },
+      });
+    }
   }
 
   return (
@@ -51,16 +54,16 @@ export function OTP() {
           <CardDescription>Insira seu código de recuperação.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(handleVerifyOTP)}>
-            <InputOTP maxLength={6} >
-              <InputOTPGroup >
-                <InputOTPSlot index={0} {...register("OTPInput_1")}/>
-                <InputOTPSlot index={1} {...register("OTPInput_2")}/>
-                <InputOTPSlot index={2} {...register("OTPInput_3")} />
+          <form onSubmit={(event) => handleVerifyOTP(event)}>
+            <InputOTP maxLength={6} onChange={(value) => setOtpValue(value)}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
 
-                <InputOTPSlot index={3} {...register("OTPInput_4")}/>
-                <InputOTPSlot index={4} {...register("OTPInput_5")}/>
-                <InputOTPSlot index={5} {...register("OTPInput_6")}/>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
               </InputOTPGroup>
             </InputOTP>
 

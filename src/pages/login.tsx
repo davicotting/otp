@@ -21,9 +21,9 @@ export function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-2">
-            <Input placeholder="E-mail" />
-            <Input placeholder="Senha" />
+          <div className="flex flex-col gap-5">
+            <Input placeholder="E-mail" type="email"/>
+            <Input placeholder="Senha" type="password"/>
           </div>
           <div className="flex items-center justify-end mt-2">
             <Link to="/email" className="text-xs hover:underline">
